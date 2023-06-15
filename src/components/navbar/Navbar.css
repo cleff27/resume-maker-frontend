@@ -1,0 +1,15 @@
+a {
+  text-decoration: none; /* no underline */
+}
+.auth-button {
+  padding-right: 5px;
+}
+.app-bar {
+  background-color: #ad56cd !important;
+}
+.auth-button-2 {
+  background-color: black !important;
+}
+.logo-cv {
+  max-height: 55px;
+}
