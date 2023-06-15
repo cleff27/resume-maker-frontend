@@ -9,7 +9,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { Button } from "@mui/material";
+import { Alert, Backdrop, Button, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { URL } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,8 @@ const CreatePage = (props) => {
   });
 
   const [value, setValue] = useState("1");
-
+  const [load, setload] = useState(false);
+  const [error, seterror] = useState("");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -46,18 +47,20 @@ const CreatePage = (props) => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+    setload(true);
     axios
       .post(URL + "/create", detail)
       .then((response) => {
         console.log(response.data);
         // setError(response.data.message);
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+        navigate("/myResumes");
       })
       .catch((error) => {
         console.error(error);
-        //setError(error.response.data.error);
+        seterror(error.response.data.error);
+      })
+      .finally(() => {
+        setload(false);
       });
   };
   return (
@@ -103,7 +106,20 @@ const CreatePage = (props) => {
           </TabPanel>
           <TabPanel value="5">
             <Courseworks setDetails={setDetails} detail={detail} />
-            <Button onClick={handleSubmit}>Submit</Button>
+            {error.length > 0 ? <Alert severity="error">{error}</Alert> : null}
+            {load ? (
+              <Backdrop
+                sx={{
+                  color: "#fff",
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={load}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
+            ) : (
+              <Button onClick={handleSubmit}>Submit</Button>
+            )}
           </TabPanel>
         </TabContext>
       </Box>
